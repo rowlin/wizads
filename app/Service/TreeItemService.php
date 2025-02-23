@@ -42,6 +42,21 @@ class TreeItemService
         return $treeItem->delete();
     }
 
+    public function move(array $data): bool
+    {
+        $moveItem = $this->getById((int)$data['start']);
+        $parentId = $moveItem->parent_id;
+
+        if ($parentId) {
+            $moveItem->children()->each(function ($el) use ($parentId) {
+                $el->update(['parent_id' => $parentId]);
+            });
+        } else {
+            abort(500, 'I cant to move Root element');
+        }
+
+        return $moveItem->update(['parent_id' => $data['end']]);
+    }
 
 
 

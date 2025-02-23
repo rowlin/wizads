@@ -4,6 +4,7 @@ import axios from 'axios'
 const state = reactive({
     isOpenModal: false,
     currentItem: {},
+    moveIsActive: true,
     action: 'create',
     tree: {},
     active: null,
@@ -18,6 +19,7 @@ export default function useTreeActionState() {
     const tree = computed(() => state.tree)
     const active = computed(() => state.active)
     const errors = computed(() => state.errors)
+    const moveIsActive = computed(() => state.moveIsActive)
 
     const setOpenModal = (isOpen) => {
         setErrors({})
@@ -51,6 +53,10 @@ export default function useTreeActionState() {
         }
     }
 
+    const setMoveIsActive = (isMove) => {
+        state.moveIsActive = isMove
+    }
+
     const loadCurrentTree = async (id) => {
         await axios.get(`/api/tree/${id}`)
             .then(({ data }) => {
@@ -70,7 +76,6 @@ export default function useTreeActionState() {
                 if (e.response.data.errors) {
                     setErrors(e.response.data.errors);
                 }
-                return Promise.reject(e.response.data.errors ?? e.response.data.message)
             })
     }
 
@@ -84,7 +89,6 @@ export default function useTreeActionState() {
                 if (e.response.data.errors) {
                     setErrors(e.response.data.errors);
                 }
-                return Promise.reject(e.response.data.errors ?? e.response.data.message)
             })
     }
 
@@ -95,14 +99,18 @@ export default function useTreeActionState() {
                 setCurrentItem({});
                 loadCurrentTree(active.value);
             }).catch((e) => {
-                return Promise.reject(e.response.data.errors ?? e.response.data.message)
+                console.error(e.response.data.errors);
             });
     }
 
     const moveTreeItem = async (formData) => {
-        await axios.post('')
-        setOpenModal(false);
-        setCurrentItem({});
+        setMoveIsActive(false);
+        await axios.put(`api/tree/item/move`, formData).then(() => {
+            setMoveIsActive(true);
+            loadCurrentTree(active.value);
+        }).catch((e) => {
+            console.error(e.response.data.errors);
+        })
     }
 
     return {
@@ -112,10 +120,13 @@ export default function useTreeActionState() {
         active,
         tree,
         errors,
+        moveIsActive,
         setActive,
         setActiveTree,
         setOpenModal,
         setAction,
+        setMoveIsActive,
+        moveTreeItem,
         loadCurrentTree,
         setCurrentItem,
         updateTreeItem,

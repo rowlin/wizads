@@ -1,5 +1,5 @@
 <template>
-    <span class="m-2">
+    <span class="m-2" draggable="true" id="dragtarget" :attr-dragid="item.id" :attr-dropid="item.id">
         {{ item.name }} [ {{ item.price }}]
         <span class="icon_box">
             <span class="icon" @click="editAction">✎</span>
@@ -7,6 +7,7 @@
             <span class="icon" @click="removeAction">-</span>
         </span>
     </span>
+    <span class="droptarget" :attr-dropid="item.id"></span>
 </template>
 
 <script>
@@ -48,7 +49,6 @@ export default {
                 this.setAction('delete');
                 this.setOpenModal(true);
             }else {
-                console.log('here')
                 this.deleteTreeItem(this.item.id);
             }
 

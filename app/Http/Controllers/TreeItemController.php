@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TreeItem\CreateRequest;
+use App\Http\Requests\TreeItem\MoveRequest;
 use App\Http\Requests\TreeItem\UpdateRequest;
 use App\Models\TreeItem;
 use App\Service\TreeItemService;
@@ -18,7 +19,7 @@ class TreeItemController extends Controller
         return $this->treeItemService->create($request->validated());
     }
 
-    public function update(int $treeItemId , UpdateRequest $request): bool
+    public function update(int $treeItemId, UpdateRequest $request): bool
     {
         return $this->treeItemService->update($treeItemId, $request->validated());
     }
@@ -28,5 +29,8 @@ class TreeItemController extends Controller
         return $this->treeItemService->delete($treeItemId);
     }
 
-
+    public function move(MoveRequest $request): bool
+    {
+        return $this->treeItemService->move($request->validated());
+    }
 }

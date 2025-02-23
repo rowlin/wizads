@@ -1,7 +1,8 @@
 <template>
     <div>
         <ul class="tree">
-            <li><TreeAction :item="tree"></TreeAction>
+            <li>
+                <TreeAction :item="tree"></TreeAction>
                 <ul v-if="tree.children && tree.children.length > 0">
                     <tree-item :child="tree.children" />
                 </ul>
@@ -13,7 +14,7 @@
 <script>
 import TreeAction from "./TreeAction.vue";
 import TreeItem from "./TreeItem.vue";
-
+import useTreeActionState from '@/plugins/treeActionState.js';
 export default {
     name: "TreeView",
     components: { TreeItem, TreeAction },
@@ -22,6 +23,34 @@ export default {
             type: Object,
             required: true,
         },
+    },
+    setup() {
+        const { moveTreeItem, moveIsActive} = useTreeActionState();
+        const dragResult = {
+            start : '',
+            end : ''
+        };
+
+        document.addEventListener("dragstart", function (event) {
+            dragResult.start = event.target.getAttribute('attr-dragid');
+            event.target.style.opacity = "0.4";
+        });
+
+        document.addEventListener("dragend", function (event) {
+            event.target.style.opacity = "1";
+        });
+
+        document.addEventListener("dragover", function (event) {
+            event.preventDefault();
+        });
+
+        document.addEventListener("drop", function (event) {
+            event.preventDefault();
+            dragResult.end = event.target.getAttribute('attr-dropid');
+            if (dragResult.end, moveIsActive) {
+                moveTreeItem(dragResult);
+            }
+        });
     }
 }
 </script>
@@ -74,5 +103,4 @@ export default {
     border-radius: 50%;
     background: #ddd;
 }
-
 </style>

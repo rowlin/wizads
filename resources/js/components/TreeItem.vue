@@ -1,5 +1,5 @@
 <template>
-    <li v-for="(el, index) in child" :key="index">
+    <li v-for="(el, index) in child" :key="index" :attr-dropId="el.id">
         <TreeAction :item="el"></TreeAction>
         <TreeItem v-if="el.children && el.children.length > 0" :child="el.children">{{ el.name }}</TreeItem>
     </li>
