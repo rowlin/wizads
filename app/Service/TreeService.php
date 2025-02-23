@@ -32,6 +32,8 @@ class TreeService
 
         if ($tree) {
             $rootItemId = $tree->tree_item_id;
+        } else {
+            abort(404, 'Tree not found');
         }
 
         return $this->treeItemService->getById($rootItemId);

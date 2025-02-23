@@ -1,10 +1,6 @@
 <template>
     <div class="modal-body">
-        <div class="alert alert-danger" v-if="Object.keys(validationErrors).length > 0">
-            <ul class="mb-0">
-                <li v-for="(value, key) in validationErrors" :key="key">{{ value[0] }}</li>
-            </ul>
-        </div>
+        <ErrorView :errors="validationErrors"></ErrorView>
         <div class="mb-3">
             <label for="treeName" class="form-label">Name</label>
             <input type="text" class="form-control" id="treeName" v-model="form.name" placeholder="Enter tree name">
@@ -25,10 +21,10 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+import ErrorView from "./ErrorView.vue";
 export default {
     name: "CreateTree",
+    components:{ErrorView},
     emits: ['close', 'updateTreeList'],
     data() {
         return {

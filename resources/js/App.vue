@@ -10,7 +10,7 @@ const pages = [Login, Register];
 
 <template>
     <div id="app" class="min-vh-100">
-        <Navbar :currentPage="currentPage" :authenticated="authenticated" @updateTreeList="console.log('wjjkw');" @goto="goto" @logout="logoutRequest" />
+        <Navbar :currentPage="currentPage" :authenticated="authenticated" @goto="goto" @logout="logoutRequest" />
         <main>
             <div v-if="!authenticated">
                 <component :is="pages.find((page) => page.name === currentPage)" @goto="goto"></component>
@@ -44,5 +44,4 @@ export default {
 </script>
 
 <style>
-/* Your existing styles */
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="tree">
-            <li><span class="m-2">{{ tree.name }} <span>✎ </span></span>
+            <li><TreeAction :item="tree"></TreeAction>
                 <ul v-if="tree.children && tree.children.length > 0">
                     <tree-item :child="tree.children" />
                 </ul>
@@ -11,10 +11,12 @@
 </template>
 
 <script>
+import TreeAction from "./TreeAction.vue";
 import TreeItem from "./TreeItem.vue";
+
 export default {
     name: "TreeView",
-    components: { TreeItem },
+    components: { TreeItem, TreeAction },
     props: {
         tree: {
             type: Object,

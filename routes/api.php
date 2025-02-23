@@ -6,6 +6,7 @@ use App\Http\Controllers\TreeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\TreeItemController;
 
 Route::post('login', LoginController::class)->name('auth.login');
 Route::post('register', RegisterController::class)->name('auth.register');
@@ -25,7 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/create', [TreeController::class , 'create'])->name('tree.create');
         Route::delete('/{id}', [TreeController::class, 'delete' ])->name('tree.delete');
         Route::patch('/{id}', [TreeController::class, 'update'])->name('tree.update');
-
+        Route::group(['prefix' => 'item'], function () {
+            Route::post('/create', [TreeItemController::class , 'create'])->name('tree_item.create');
+            Route::patch('/{id}', [TreeItemController::class, 'update'])->name('tree_item.update');
+            Route::delete('/{id}', [TreeItemController::class, 'delete' ])->name('tree_item.delete');
+        });
 
     });
 

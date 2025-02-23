@@ -26,4 +26,9 @@ class TreeItemRepository
         return $this->treeItem->query()->create($itemData);
     }
 
+    public function update($treeItem, array $data): bool
+    {
+        return $treeItem->update($data);
+    }
+
 }

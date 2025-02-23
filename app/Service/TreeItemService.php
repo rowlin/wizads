@@ -13,12 +13,10 @@ class TreeItemService
     {
     }
 
-
     public function getById(int $id): TreeItem
     {
         return $this->treeItemRepository->getById($id);
     }
-
 
     public function createRoot(string $mainItem): TreeItem
     {
@@ -26,10 +24,25 @@ class TreeItemService
         return $this->treeItemRepository->create($data);
     }
 
-    public function createItem(): void
+    public function create(array $data): TreeItem
     {
-
+        return $this->treeItemRepository->create($data);
     }
+
+    public function update(int $id, array $data): bool
+    {
+        $treeItem = $this->getById($id);
+
+        return $this->treeItemRepository->update($treeItem, $data);
+    }
+
+    public function delete(int $id): bool
+    {
+        $treeItem = $this->getById($id);
+        return $treeItem->delete();
+    }
+
+
 
 
 
