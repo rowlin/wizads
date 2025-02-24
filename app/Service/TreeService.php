@@ -23,7 +23,11 @@ class TreeService
 
     public function getTreeById(int $treeId): TreeItem
     {
-        return Cache::remember("tree-$treeId", 120,  function () use ($treeId) {
+        if (request()->has('price')) {
+            return $this->getTreeWithItems($treeId);
+        }
+
+        return Cache::remember("tree-$treeId", 120, function () use ($treeId) {
             $tree = $this->getById($treeId);
 
             if ($tree) {
@@ -31,6 +35,16 @@ class TreeService
             }
             return $this->treeItemService->getById($rootItemId);
         });
+    }
+
+    private function getTreeWithItems(int $treeId): TreeItem
+    {
+        $tree = $this->getById($treeId);
+
+        if ($tree) {
+            $rootItemId = $tree->tree_item_id;
+        }
+        return $this->treeItemService->getById($rootItemId);
     }
 
     public function getPublicOrSelfList(): Collection
