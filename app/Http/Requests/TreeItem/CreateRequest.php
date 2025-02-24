@@ -22,9 +22,10 @@ class CreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'parent_id' => 'required|numeric',
+            'parent_id' => 'required|integer',
             'name' => 'required|min:3',
             'price' => 'required|numeric|min:0',
+            'tree_id' => 'required|integer',
         ];
     }
 }

@@ -24,9 +24,9 @@ class TreeItemController extends Controller
         return $this->treeItemService->update($treeItemId, $request->validated());
     }
 
-    public function delete(int $treeItemId): bool
+    public function delete(int $treeId, int $treeItemId): bool
     {
-        return $this->treeItemService->delete($treeItemId);
+        return $this->treeItemService->delete($treeId, $treeItemId);
     }
 
     public function move(MoveRequest $request): bool

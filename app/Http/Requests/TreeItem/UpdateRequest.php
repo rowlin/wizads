@@ -24,6 +24,7 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'required|min:3',
             'price' => 'required|numeric|min:0',
+            'tree_id' => 'required|integer'
         ];
     }
 }

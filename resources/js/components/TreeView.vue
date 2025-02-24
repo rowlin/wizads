@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="m-2">
         <ul class="tree">
             <li>
-                <TreeAction :item="tree"></TreeAction>
+                <TreeAction :item="tree" :showPrice="false" :showRemoveAction="false"></TreeAction>
                 <ul v-if="tree.children && tree.children.length > 0">
                     <tree-item :child="tree.children" />
                 </ul>
@@ -24,11 +24,17 @@ export default {
             required: true,
         },
     },
+    data() {
+        return {
+            price: null,
+        }
+    },
     setup() {
-        const { moveTreeItem, moveIsActive} = useTreeActionState();
+        const { moveTreeItem, moveIsActive } = useTreeActionState();
+
         const dragResult = {
-            start : '',
-            end : ''
+            start: '',
+            end: ''
         };
 
         document.addEventListener("dragstart", function (event) {
@@ -44,13 +50,36 @@ export default {
             event.preventDefault();
         });
 
-        document.addEventListener("drop", function (event) {
-            event.preventDefault();
-            dragResult.end = event.target.getAttribute('attr-dropid');
-            if (dragResult.end, moveIsActive) {
-                moveTreeItem(dragResult);
+        document.addEventListener("dragleave", function (event) {
+            if (event.target.className == "droptarget") {
+                event.target.style.border = "";
             }
         });
+
+        document.addEventListener("dragover", function (event) {
+            event.preventDefault();
+        });
+
+        document.addEventListener("drop", function (event) {
+            event.preventDefault();
+            if (event.target.className == "droptarget") {
+                dragResult.end = event.target.getAttribute('attr-dropid');
+                if (dragResult.end && moveIsActive) {
+                    moveTreeItem(dragResult);
+                }
+            }
+        });
+    },
+    methods: {
+        updateFilter() {
+
+            if (typeof this.price === 'number') {
+                this.setFilterPrice(this.price);
+            } else {
+                this.price = 0;
+                this.setFilterPrice(null);
+            }
+        }
     }
 }
 </script>

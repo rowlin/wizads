@@ -7,6 +7,7 @@ const { registerRequest } = useAuth();
 const validationErrors = ref([]);
 const processing = ref(false);
 const form = reactive({
+    name: '',
     email: '',
     password: '',
     password_confirmation: '',
@@ -14,7 +15,7 @@ const form = reactive({
 
 const register = async (form) => {
     processing.value = true;
-    loginRequest(form).then(
+    registerRequest(form).then(
         () => {
             this.$emit('goto', 'Home');
         })
@@ -41,13 +42,19 @@ const register = async (form) => {
                         <div class="card-body">
                             <h1 class="text-center">Registration</h1>
                             <hr />
-                            <form @submit.prevent="register">
+                            <form @submit.prevent="register(form)">
                                 <div class="col-12" v-if="Object.keys(validationErrors).length > 0">
                                     <div class="alert alert-danger">
                                         <ul class="mb-0">
                                             <li v-for="(value, key) in validationErrors" :key="key">{{ value[0] }}</li>
                                         </ul>
                                     </div>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label for="name" class="font-weight-bold">Name</label>
+                                    <input type="text" v-model="form.name" name="name" id="name"
+                                        class="form-control">
                                 </div>
                                 <div class="form-group col-12">
                                     <label for="email" class="font-weight-bold">Email</label>
@@ -62,7 +69,7 @@ const register = async (form) => {
                                 <div class="form-group col-12 my-2">
                                     <label for="password_confirmed" class="form-label">Password</label>
                                     <input type="password" id="password_confirmed" class="form-control"
-                                        v-model="form.password_confirmed">
+                                        v-model="form.password_confirmation">
                                 </div>
 
                                 <div class="col-12 mb-2">
@@ -87,7 +94,7 @@ const register = async (form) => {
 <script>
 export default {
     name: "Register",
-    emits: ['goto'],
+     emits: ['goto'],
 }
 </script>
 

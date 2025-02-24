@@ -1,10 +1,10 @@
 <template>
-    <span class="m-2" draggable="true" id="dragtarget" :attr-dragid="item.id" :attr-dropid="item.id">
-        {{ item.name }} [ {{ item.price }}]
-        <span class="icon_box">
+    <span class="m-2 droptarget" draggable="true" :attr-dragid="item.id">
+        <span class="droptarget" :attr-dropid="item.id" >{{ item.name }}</span> <span v-if="showPrice"> [ {{ item.price }}]</span>
+        <span class="icon_box" >
             <span class="icon" @click="editAction">✎</span>
             <span class="icon" @click="addAction">+</span>
-            <span class="icon" @click="removeAction">-</span>
+            <span class="icon" v-if="showRemoveAction" @click="removeAction">-</span>
         </span>
     </span>
     <span class="droptarget" :attr-dropid="item.id"></span>
@@ -18,6 +18,16 @@ export default {
         item: {
             type: Object,
             required: true
+        },
+        showRemoveAction: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        showPrice: {
+            type: Boolean,
+            required: false,
+            default: true
         }
     },
     setup() {
@@ -48,7 +58,7 @@ export default {
                 this.setCurrentItem(currentItem);
                 this.setAction('delete');
                 this.setOpenModal(true);
-            }else {
+            } else {
                 this.deleteTreeItem(this.item.id);
             }
 
@@ -58,6 +68,10 @@ export default {
 </script>
 
 <style scoped>
+.droptarget {
+    cursor: pointer;
+}
+
 .icon_box {
     margin-left: 20px;
 }
@@ -67,7 +81,6 @@ export default {
     transform: scale(2, 2);
     height: 30px;
     width: 30px;
-    ;
     cursor: pointer;
 }
 </style>

@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/create', [TreeItemController::class , 'create'])->name('tree_item.create');
             Route::put('/move', [ TreeItemController::class , 'move'])->name('tree_item.move');
             Route::patch('/{id}', [TreeItemController::class, 'update'])->name('tree_item.update');
-            Route::delete('/{id}', [TreeItemController::class, 'delete' ])->name('tree_item.delete');
+            Route::delete('/{treeId}/{id}', [TreeItemController::class, 'delete' ])->name('tree_item.delete');
         });
 
     });

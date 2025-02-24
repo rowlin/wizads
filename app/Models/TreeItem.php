@@ -13,18 +13,21 @@ class TreeItem extends Model
 
     public $timestamps = false;
 
-    protected $with = "children";
-
+    protected $with = ['children'];
     protected $fillable = [ 'name', 'parent_id', 'price', 'order'];
 
     public function children(): HasMany
     {
-        return $this->hasMany(TreeItem::class,'parent_id','id') ;
+        return $this->hasMany(TreeItem::class,'parent_id','id')
+            ->when(request()->has('price'), function ($q) {
+                $q->where('price', '>=', request()->get('price'));
+            });
+        //FIXME: No good way!
     }
 
     public function parent(): HasOne
     {
-        return $this->hasOne(TreeItem::class,'id','parent_id') ;
+        return $this->hasOne(TreeItem::class,'id','parent_id');
     }
 
 }

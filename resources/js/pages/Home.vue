@@ -3,6 +3,10 @@
         <Sidebar :treeList="treeList" :active="active" @updateTreeList="updateTreeList" @setActive="setActiveTree">
         </Sidebar>
         <div id="content" class="p-4">
+            <div class="m-2">
+                Filter by price <input type="number" v-model="price" @change="updateFilter" />
+            </div>
+            <hr />
             <TreeView :tree="tree"></TreeView>
         </div>
         <Modal v-if="isOpenModal" :title="getTitle()" @close="closeModal">
@@ -26,7 +30,24 @@ export default {
     name: 'Home',
     components: { Sidebar, TreeView, Modal, TreeItemForm },
     setup() {
-        const { loadCurrentTree, action, active, setActive, setActiveTree, tree, errors, isOpenModal, currentItem, setOpenModal, updateTreeItem, createTreeItem, deleteTreeItem} = useTreeActionState();
+        const {
+            loadCurrentTree,
+            action,
+            active,
+            filterPrice,
+            setFilterPrice,
+            setActive,
+            setActiveTree,
+            tree,
+            errors,
+            isOpenModal,
+            currentItem,
+            setOpenModal,
+            updateTreeItem,
+            createTreeItem,
+            deleteTreeItem
+        } = useTreeActionState();
+
         return {
             loadCurrentTree,
             active,
@@ -35,6 +56,8 @@ export default {
             errors,
             isOpenModal,
             currentItem,
+            filterPrice,
+            setFilterPrice,
             setActive,
             setActiveTree,
             setOpenModal,
@@ -48,6 +71,7 @@ export default {
     },
     data() {
         return {
+            price: null,
             treeList: [],
         }
     },
@@ -82,7 +106,17 @@ export default {
             } else if (this.action === 'delete') {
                 this.deleteTreeItem(formData.id);
             }
+        },
+        updateFilter() {
+            if (typeof this.price === 'number') {
+                this.setFilterPrice(this.price);
+            } else {
+                this.price = 0;
+                this.setFilterPrice(null);
+            }
+            this.loadCurrentTree(this.active);
         }
+
     }
 }
 </script>

@@ -24,6 +24,7 @@ class MoveRequest extends FormRequest
         return [
             'start' => 'required|integer|exists:tree_items,id',
             'end' => 'required|integer|exists:tree_items,id',
+            'tree_id' => 'required|integer',
         ];
     }
 }

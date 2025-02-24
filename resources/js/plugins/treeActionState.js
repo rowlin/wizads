@@ -6,6 +6,7 @@ const state = reactive({
     currentItem: {},
     moveIsActive: true,
     action: 'create',
+    filterPrice: null,
     tree: {},
     active: null,
     errors: {}
@@ -20,6 +21,7 @@ export default function useTreeActionState() {
     const active = computed(() => state.active)
     const errors = computed(() => state.errors)
     const moveIsActive = computed(() => state.moveIsActive)
+    const filterPrice = computed(() => state.filterPrice)
 
     const setOpenModal = (isOpen) => {
         setErrors({})
@@ -46,6 +48,10 @@ export default function useTreeActionState() {
         state.errors = errors
     }
 
+    const setFilterPrice = (price) => {
+        state.filterPrice = price
+    }
+
     const setActiveTree = (id) => {
         setActive(id);
         if (id) {
@@ -58,6 +64,10 @@ export default function useTreeActionState() {
     }
 
     const loadCurrentTree = async (id) => {
+        if(state.filterPrice) {
+            id = id + '?price=' + state.filterPrice
+        }
+
         await axios.get(`/api/tree/${id}`)
             .then(({ data }) => {
                 setTree(data);
@@ -67,6 +77,7 @@ export default function useTreeActionState() {
     }
 
     const updateTreeItem = async (formData) => {
+        formData.tree_id = active.value;
         await axios.patch(`/api/tree/item/${formData.id}`, formData)
             .then(() => {
                 setOpenModal(false);
@@ -80,6 +91,7 @@ export default function useTreeActionState() {
     }
 
     const createTreeItem = async (formData) => {
+        formData.tree_id = active.value;
         await axios.post(`/api/tree/item/create`, formData)
             .then(() => {
                 setOpenModal(false);
@@ -93,7 +105,7 @@ export default function useTreeActionState() {
     }
 
     const deleteTreeItem = async (id) => {
-        await axios.delete(`/api/tree/item/${id}`)
+        await axios.delete(`/api/tree/item/${active.value}/${id}`)
             .then(() => {
                 setOpenModal(false);
                 setCurrentItem({});
@@ -104,16 +116,19 @@ export default function useTreeActionState() {
     }
 
     const moveTreeItem = async (formData) => {
+        formData.tree_id = active.value;
         setMoveIsActive(false);
         await axios.put(`api/tree/item/move`, formData).then(() => {
             setMoveIsActive(true);
             loadCurrentTree(active.value);
         }).catch((e) => {
+            setMoveIsActive(true);
             console.error(e.response.data.errors);
         })
     }
 
     return {
+        filterPrice,
         isOpenModal,
         currentItem,
         action,
@@ -121,6 +136,7 @@ export default function useTreeActionState() {
         tree,
         errors,
         moveIsActive,
+        setFilterPrice,
         setActive,
         setActiveTree,
         setOpenModal,

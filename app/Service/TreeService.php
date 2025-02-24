@@ -8,6 +8,7 @@ use App\Models\Tree;
 use App\Models\TreeItem;
 use App\Repository\TreeRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class TreeService
 {
@@ -20,23 +21,16 @@ class TreeService
         return $this->treeRepository->getById($treeId);
     }
 
-    // @depricated
-    // public function getUserTreeList(): Collection
-    // {
-    //     return $this->treeRepository->getListByUserId(auth()->id());
-    // }
-
     public function getTreeById(int $treeId): TreeItem
     {
-        $tree = $this->getById($treeId);
+        return Cache::remember("tree-$treeId", 120,  function () use ($treeId) {
+            $tree = $this->getById($treeId);
 
-        if ($tree) {
-            $rootItemId = $tree->tree_item_id;
-        } else {
-            abort(404, 'Tree not found');
-        }
-
-        return $this->treeItemService->getById($rootItemId);
+            if ($tree) {
+                $rootItemId = $tree->tree_item_id;
+            }
+            return $this->treeItemService->getById($rootItemId);
+        });
     }
 
     public function getPublicOrSelfList(): Collection
@@ -60,7 +54,7 @@ class TreeService
         if ($tree) {
             $this->treeRepository->update($tree, $data);
         }
-        //TODO: fix me
+
         return $tree->toArray();
     }
 

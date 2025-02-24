@@ -6,11 +6,18 @@ namespace App\Service;
 
 use App\Models\TreeItem;
 use App\Repository\TreeItemRepository;
+use Illuminate\Support\Facades\Cache;
 
 class TreeItemService
 {
     public function __construct(private TreeItemRepository $treeItemRepository)
     {
+    }
+
+
+    private function forgetCache(int $treeId): bool
+    {
+        return Cache::forget("tree-". $treeId);
     }
 
     public function getById(int $id): TreeItem
@@ -26,20 +33,26 @@ class TreeItemService
 
     public function create(array $data): TreeItem
     {
-        return $this->treeItemRepository->create($data);
+        $treeItem = $this->treeItemRepository->create($data);
+
+        if ($treeItem) {
+            $this->forgetCache($data['tree_id']);
+        }
+
+        return $treeItem;
     }
 
     public function update(int $id, array $data): bool
     {
         $treeItem = $this->getById($id);
 
-        return $this->treeItemRepository->update($treeItem, $data);
+        return $this->treeItemRepository->update($treeItem, $data) ? $this->forgetCache($data['tree_id']) : false;
     }
 
-    public function delete(int $id): bool
+    public function delete(int $treeId, int $id): bool
     {
         $treeItem = $this->getById($id);
-        return $treeItem->delete();
+        return $treeItem->delete() ? $this->forgetCache($treeId) : false;
     }
 
     public function move(array $data): bool
@@ -55,7 +68,11 @@ class TreeItemService
             abort(500, 'I cant to move Root element');
         }
 
-        return $moveItem->update(['parent_id' => $data['end']]);
+        if ($moveItem->update(['parent_id' => $data['end']])) {
+            return $this->forgetCache($data['tree_id']);
+        }
+
+        return false;
     }
 
 
