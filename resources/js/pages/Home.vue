@@ -18,14 +18,11 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue'
 import Sidebar from '@/components/SideBar.vue';
 import TreeView from '@/components/TreeView.vue';
 import useTreeActionState from '@/plugins/treeActionState.js';
 import Modal from '@/components/Modal.vue';
-const TreeItemForm = defineAsyncComponent(() =>
-    import('@/form/TreeItemForm.vue')
-);
+import TreeItemForm from '@/form/TreeItemForm.vue';
 export default {
     name: 'Home',
     components: { Sidebar, TreeView, Modal, TreeItemForm },
