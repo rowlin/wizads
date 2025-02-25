@@ -8,7 +8,10 @@ SPA приложение (клиент) и REST API сервис (сервер)
 
 
 Установка:
-make install
+make init
 
 Запуск проекта :
 make up 
+
+
+![image](https://github.com/user-attachments/assets/50a6fb06-ed78-4648-9de9-cb25e99d1cd1)
