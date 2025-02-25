@@ -1,6 +1,6 @@
 up: up-d yarn-run_dev
-init: .env composer-install up-d key-generate refresh-db npm-install npm-build
-start: up-d refresh-db npm-dev queue
+init: .env composer-install up-d key-generate refresh-db yarn-install yarn-build
+start: up-d refresh-db yarn-run_dev
 restart: down up
 refresh: restart refresh-db
 clear-tail: clear-log tailog
@@ -20,6 +20,8 @@ key-generate:
 	./vendor/bin/sail artisan key:generate
 yarn-run_dev:
 	./vendor/bin/sail yarn run dev &
+yarn-build:
+	./vendor/bin/sail yarn run build
 yarn-install:
 	./vendor/bin/sail yarn install
 .env:
